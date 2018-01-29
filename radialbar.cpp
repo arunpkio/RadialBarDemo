@@ -172,6 +172,7 @@ void RadialBar::setValue(qreal value)
     if(m_Value == value)
         return;
     m_Value = value;
+    update();   //update the radialbar
     emit valueChanged();
 }
 
