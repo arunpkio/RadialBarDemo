@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>main2.qml</file>
+        <file>radialBarShapeDemo.qml</file>
+        <file>RadialBarShape.qml</file>
     </qresource>
 </RCC>

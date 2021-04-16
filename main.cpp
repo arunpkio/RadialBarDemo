@@ -12,7 +12,8 @@
 ** copies of the Software, and to permit persons to whom the Software is
 ** furnished to do so, subject to the following conditions:
 **
-** The above copyright notice and this permission notice shall be included in all
+** The above copyright notice and this permission notice shall be included in
+*all
 ** copies or substantial portions of the Software.
 **
 ** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -29,15 +30,14 @@
 
 #include "radialbar.h"
 
-int main(int argc, char *argv[])
-{
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication app(argc, argv);
+int main(int argc, char *argv[]) {
+  QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+  QGuiApplication app(argc, argv);
 
-    qmlRegisterType<RadialBar>("CustomControls", 1, 0, "RadialBar");
+  qmlRegisterType<RadialBar>("CustomControls", 1, 0, "RadialBar");
 
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/main2.qml")));
+  QQmlApplicationEngine engine;
+  engine.load(QUrl(QStringLiteral("qrc:/radialBarShapeDemo.qml")));
 
-    return app.exec();
+  return app.exec();
 }
