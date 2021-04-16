@@ -30,6 +30,8 @@ The property DialType is peovided as custom enum which will have following prope
 
 ## Screenshots:
 
+![Screen Recording 2021-04-16 at 14 26 52](https://user-images.githubusercontent.com/4667704/115068315-66dd8580-9ef2-11eb-93d9-19b22875216d.gif)
+
 ![alt tag](https://cloud.githubusercontent.com/assets/4667704/24536488/60bd8b32-15f8-11e7-81a7-997fb6fd119b.png)
 
 ![alt tag](https://cloud.githubusercontent.com/assets/4667704/24536491/60bf46f2-15f8-11e7-8390-dbc29d35ba7b.png)
