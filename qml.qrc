@@ -4,5 +4,6 @@
         <file>main2.qml</file>
         <file>radialBarShapeDemo.qml</file>
         <file>RadialBarShape.qml</file>
+        <file>RoundSlider.qml</file>
     </qresource>
 </RCC>

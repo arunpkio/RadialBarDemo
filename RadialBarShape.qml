@@ -18,6 +18,7 @@ Item {
     property real minValue: 0
     property real maxValue: 100
     property real value: 0
+    property real angle: mapFromValue(minValue, maxValue, startAngle, (spanAngle - startAngle), value)
     property int dialWidth: 15
 
     property color backgroundColor: "transparent"
@@ -26,6 +27,10 @@ Item {
 
     property int penStyle: Qt.RoundCap
     property int dialType: RadialBarShape.DialType.FullDial
+
+    function mapFromValue(inMin, inMax, outMin, outMax, inValue) {
+        return Math.round((inValue - inMin) * (outMax - outMin) / (inMax - inMin) + outMin);
+    }
 
     QtObject {
         id: internals
