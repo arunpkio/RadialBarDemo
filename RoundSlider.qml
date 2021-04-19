@@ -10,19 +10,19 @@ Rectangle {
     color: "grey"
 
     property var centerPt: Qt.point(width / 2, height / 2)
-    property real angle: 0
+    property real angle: startAngle
     property int dialWidth: 20
 
-    property real startAngle: 0
-    property real endAngle: 180
+    property real startAngle: 90
+    property real endAngle: 320
 
     RadialBarShape {
         anchors.fill: parent
-        value: control.angle
+        value: control.angle - control.startAngle
         dialWidth: control.dialWidth
         minValue: 0
         maxValue: 360
-        startAngle: 90
+        startAngle: 90 + control.startAngle
     }
 
     MouseArea {
@@ -38,8 +38,10 @@ Rectangle {
             var inInSideOuterRadius = clickedDistance <= outerRadius2
             if (inInSideOuterRadius && isOutOfInnerRadius)
             {
-                var angleDeg = Math.atan2(centerPt.y - mouseY, centerPt.x - mouseX) * 180 / Math.PI + 180;
-                control.angle = angleDeg
+                var angleDeg = Math.atan2(mouseY - centerPt.y, mouseX - centerPt.x) * 180 / Math.PI;
+                if (angleDeg < 0) angleDeg = 360 + angleDeg;
+                if((angleDeg >= control.startAngle) && (angleDeg <= control.endAngle))
+                    control.angle = angleDeg
             }
         }
     }
@@ -70,14 +72,16 @@ Rectangle {
             anchors.fill: parent
             onPositionChanged: getVal()
             onClicked: getVal()
+            cursorShape: Qt.SizeAllCursor
 
             function getVal() {
                 var handlePoint = mapToItem(control, Qt.point(trackMouse.mouseX, trackMouse.mouseY))
 
                 // angle in degrees
-                var angleDeg = Math.atan2(centerPt.y - handlePoint.y, centerPt.x - handlePoint.x) * 180 / Math.PI + 180;
-                control.angle = angleDeg
-                return angleDeg
+                var angleDeg = Math.atan2(handlePoint.y - centerPt.y, handlePoint.x - centerPt.x) * 180 / Math.PI;
+                if (angleDeg < 0) angleDeg = 360 + angleDeg;
+                if((angleDeg >= control.startAngle) && (angleDeg <= control.endAngle))
+                    control.angle = angleDeg
             }
         }
     }
