@@ -24,6 +24,8 @@ Item {
     property bool setUpdatedValue: false
     property real handleOffset: 0.5
 
+    property bool wheelEnabled: false
+
     property Component handle: null
 
     function mapFromValue(inMin, inMax, outMin, outMax, inValue) {
@@ -81,6 +83,27 @@ Item {
                 if((angleDeg >= control.startAngle) && (angleDeg <= control.endAngle)) {
                     control.updateAngle(angleDeg)
                 }
+            }
+        }
+    }
+
+    /// Wheel Event handler
+    WheelHandler {
+        enabled: control.wheelEnabled
+        onWheel: {
+            var angleDeg = control.newAngleValue
+
+            if(event.angleDelta.y > 0)
+                angleDeg += 1
+            else
+                angleDeg -= 1
+
+            if (angleDeg < control.startAngle)
+                angleDeg = control.endAngle
+            if(angleDeg > control.endAngle)
+                angleDeg = control.startAngle
+            if((angleDeg >= control.startAngle) && (angleDeg <= control.endAngle)) {
+                control.updateAngle(angleDeg)
             }
         }
     }
