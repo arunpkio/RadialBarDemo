@@ -75,12 +75,47 @@ Window {
         spacing: 20
         anchors.centerIn: parent
 
-        property real newVal: 30
+        property real newVal: 0
 
-        RoundSlider {
-            id: radSlider
-            value: croot.newVal
-            onValueChanged: croot.newVal = value
+        Row {
+            spacing: 10
+            RoundSlider {
+                id: radSlider
+                value: croot.newVal
+                onValueChanged: croot.newVal = value
+                handleOffset: 0.53
+
+                handle: Rectangle {
+                    id: handleItem
+                    x: radSlider.width / 2 - width / 2
+                    y: radSlider.height / 2 - height / 2
+                    width: radSlider.dialWidth * 2
+                    height: radSlider.dialWidth
+                    color: "#bc081a"
+                    radius: width / 2
+                    antialiasing: true
+                }
+            }
+
+            RoundSlider {
+                id: radSlider2
+                value: croot.newVal
+                onValueChanged: croot.newVal = value
+                startAngle: 40
+                endAngle: 320
+                rotation: 90
+
+                handle: Rectangle {
+                    x: radSlider2.width / 2 - width / 2
+                    y: radSlider2.height / 2 - height / 2
+                    width: radSlider2.width / 2
+                    height: 10
+                    color: "#65ac89"
+                    radius: width / 2
+                    antialiasing: true
+                }
+            }
+
         }
 
         Slider {

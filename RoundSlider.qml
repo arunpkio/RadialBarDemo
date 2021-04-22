@@ -11,6 +11,8 @@ Item {
 
     property var centerPt: Qt.point(width / 2, height / 2)
     property real angle: mapFromValue(minValue, maxValue, startAngle, endAngle, control.value)
+
+    readonly property alias actAngle: control.angle
     property int dialWidth: 20
 
     property real startAngle: 0
@@ -19,8 +21,10 @@ Item {
     property real maxValue: 100
     property real value: 0
     property real newAngleValue: startAngle
-
     property bool setUpdatedValue: false
+    property real handleOffset: 0.5
+
+    property Component handle: null
 
     function mapFromValue(inMin, inMax, outMin, outMax, inValue) {
         return (inValue - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
@@ -55,6 +59,8 @@ Item {
         minValue: 0
         maxValue: 360
         startAngle: 90 + control.startAngle
+        progressColor: "#ff8d00"
+        penStyle: Qt.FlatCap
     }
 
     MouseArea {
@@ -79,43 +85,66 @@ Item {
         }
     }
 
-    Rectangle {
-        id: handleItem
-        x: control.width / 2 - width / 2
-        y: control.height / 2 - height / 2
-        width: control.dialWidth
-        height: control.dialWidth
-        color: "#17a81a"
-        radius: width / 2
-        antialiasing: true
+    Item {
+        id: handleContainer
+        anchors.fill: parent
+
         transform: [
             Translate {
-                x: Math.min(control.width, control.height) * 0.5 - handleItem.width / 2
+                x: Math.min(control.width, control.height) * control.handleOffset - handleLoader.width / 2
             },
             Rotation {
                 angle: control.angle
-                origin.x: handleItem.width / 2
-                origin.y: handleItem.height / 2
+                origin.x: control.width / 2
+                origin.y: control.height / 2
             }
         ]
+        Loader {
+            id: handleLoader
+            sourceComponent: control.handle ? handle : handleComponent
+        }
 
-        MouseArea {
-            id: trackMouse
-            anchors.fill: parent
-            onPositionChanged: getVal()
-            onClicked: getVal()
-            cursorShape: Qt.SizeAllCursor
+        Item {
+            parent: handleLoader
+            x: control.width / 2 - width / 2
+            y: control.height / 2 - height / 2
+            width: handleLoader.width
+            height: handleLoader.height
 
-            function getVal() {
-                var handlePoint = mapToItem(control, Qt.point(trackMouse.mouseX, trackMouse.mouseY))
+            MouseArea {
+                id: trackMouse
+                anchors.fill: parent
+                onPositionChanged: getVal()
+                onClicked: getVal()
+                cursorShape: Qt.SizeAllCursor
 
-                // angle in degrees
-                var angleDeg = Math.atan2(handlePoint.y - centerPt.y, handlePoint.x - centerPt.x) * 180 / Math.PI;
-                if (angleDeg < 0) angleDeg = 360 + angleDeg;
-                if((angleDeg >= control.startAngle) && (angleDeg <= control.endAngle)) {
-                    control.updateAngle(angleDeg)
+                function getVal() {
+                    var handlePoint = mapToItem(control, Qt.point(trackMouse.mouseX, trackMouse.mouseY))
+
+                    // angle in degrees
+                    var angleDeg = Math.atan2(handlePoint.y - centerPt.y, handlePoint.x - centerPt.x) * 180 / Math.PI;
+                    if (angleDeg < 0) angleDeg = 360 + angleDeg;
+                    if((angleDeg >= control.startAngle) && (angleDeg <= control.endAngle)) {
+                        control.updateAngle(angleDeg)
+                    }
                 }
             }
+        }
+    }
+
+    /// Default handle component
+    Component {
+        id: handleComponent
+
+        Rectangle {
+            id: handleItem
+            x: control.width / 2 - width / 2
+            y: control.height / 2 - height / 2
+            width: control.dialWidth
+            height: control.dialWidth
+            color: "#17a8fa"
+            radius: width / 2
+            antialiasing: true
         }
     }
 
