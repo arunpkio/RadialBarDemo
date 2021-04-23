@@ -33,9 +33,13 @@ Item {
     }
 
     function updateAngle(angleVal) {
-        control.setUpdatedValue = true
-        control.newAngleValue = Qt.binding(function() { return angleVal })
-        control.setUpdatedValue = false
+        if(angleVal < 0) angleVal += 360
+        if((angleVal >= control.startAngle) && (angleVal <= control.endAngle))
+        {
+            control.setUpdatedValue = true
+            control.newAngleValue = Qt.binding(function() { return angleVal })
+            control.setUpdatedValue = false
+        }
     }
 
     Binding {
@@ -60,7 +64,7 @@ Item {
         dialWidth: control.dialWidth
         minValue: 0
         maxValue: 360
-        startAngle: 90 + control.startAngle
+        startAngle: control.startAngle
         progressColor: "#ff8d00"
         penStyle: Qt.FlatCap
     }
@@ -78,11 +82,8 @@ Item {
             var inInSideOuterRadius = clickedDistance <= outerRadius2
             if (inInSideOuterRadius && isOutOfInnerRadius)
             {
-                var angleDeg = Math.atan2(mouseY - centerPt.y, mouseX - centerPt.x) * 180 / Math.PI;
-                if (angleDeg < 0) angleDeg = 360 + angleDeg;
-                if((angleDeg >= control.startAngle) && (angleDeg <= control.endAngle)) {
-                    control.updateAngle(angleDeg)
-                }
+                var angleDeg = Math.atan2(mouseY - centerPt.y, mouseX - centerPt.x) * 180 / Math.PI + 90;
+                control.updateAngle(angleDeg)
             }
         }
     }
@@ -114,7 +115,8 @@ Item {
 
         transform: [
             Translate {
-                x: Math.min(control.width, control.height) * control.handleOffset - handleLoader.width / 2
+                x: 0
+                y: -(Math.min(control.width, control.height)/2) + handleLoader.width / 2
             },
             Rotation {
                 angle: control.angle
@@ -143,13 +145,9 @@ Item {
 
                 function getVal() {
                     var handlePoint = mapToItem(control, Qt.point(trackMouse.mouseX, trackMouse.mouseY))
-
                     // angle in degrees
-                    var angleDeg = Math.atan2(handlePoint.y - centerPt.y, handlePoint.x - centerPt.x) * 180 / Math.PI;
-                    if (angleDeg < 0) angleDeg = 360 + angleDeg;
-                    if((angleDeg >= control.startAngle) && (angleDeg <= control.endAngle)) {
-                        control.updateAngle(angleDeg)
-                    }
+                    var angleDeg = Math.atan2(handlePoint.y - centerPt.y, handlePoint.x - centerPt.x) * 180 / Math.PI + 90;
+                    control.updateAngle(angleDeg)
                 }
             }
         }
