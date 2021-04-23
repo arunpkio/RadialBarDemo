@@ -22,7 +22,11 @@ Item {
     property real value: 0
     property real newAngleValue: startAngle
     property bool setUpdatedValue: false
-    property real handleOffset: 0.5
+
+    property color backgroundColor: "#505050"
+    property color dialColor: "#FF005050"
+    property color progressColor: "#FFA51BAB"
+    property int penStyle: Qt.RoundCap
 
     property bool wheelEnabled: false
 
@@ -58,15 +62,59 @@ Item {
         when: control.setUpdatedValue
     }
 
-    RadialBarShape {
-        anchors.fill: parent
-        value: control.angle - control.startAngle
-        dialWidth: control.dialWidth
-        minValue: 0
-        maxValue: 360
-        startAngle: control.startAngle
-        progressColor: "#ff8d00"
-        penStyle: Qt.FlatCap
+    QtObject {
+        id: internal
+
+        property real baseRadius: Math.min(control.width / 2, control.height / 2)
+        property real radiusOffset: control.dialWidth / 2
+        property real actualSpanAngle: control.endAngle - control.startAngle
+
+        property color transparentColor: "transparent"
+        property color dialColor: control.dialColor
+    }
+
+    // Dial Shapes
+    Shape {
+        id: shape
+        width: control.width
+        height: control.height
+        layer.enabled: true
+        layer.samples: 8
+        clip: false
+
+        ShapePath {
+            id: pathDial
+            strokeColor: control.dialColor
+            fillColor: internal.transparentColor
+            strokeWidth: control.dialWidth/2
+            capStyle: control.penStyle
+
+            PathAngleArc {
+                radiusX: internal.baseRadius - internal.radiusOffset
+                radiusY: internal.baseRadius - internal.radiusOffset
+                centerX: control.width / 2
+                centerY: control.height / 2
+                startAngle: control.startAngle - 90
+                sweepAngle: internal.actualSpanAngle
+            }
+        }
+
+        ShapePath {
+            id: pathProgress
+            strokeColor: control.progressColor
+            fillColor: internal.transparentColor
+            strokeWidth: control.dialWidth/2
+            capStyle: control.penStyle
+
+            PathAngleArc {
+                radiusX: internal.baseRadius - internal.radiusOffset
+                radiusY: internal.baseRadius - internal.radiusOffset
+                centerX: control.width / 2
+                centerY: control.height / 2
+                startAngle: control.startAngle - 90
+                sweepAngle: control.angle - control.startAngle
+            }
+        }
     }
 
     MouseArea {
@@ -109,47 +157,45 @@ Item {
         }
     }
 
-    Item {
-        id: handleContainer
-        anchors.fill: parent
 
+    // Handle Item
+    Item {
+        id: handleItem
+        x: control.width / 2 - width / 2
+        y: control.height / 2 - height / 2
+        width: control.dialWidth
+        height: width
+        antialiasing: true
         transform: [
             Translate {
                 x: 0
-                y: -(Math.min(control.width, control.height)/2) + handleLoader.width / 2
+                y: -(Math.min(control.width, control.height)/2) + control.dialWidth / 2
             },
             Rotation {
                 angle: control.angle
-                origin.x: control.width / 2
-                origin.y: control.height / 2
+                origin.x: handleItem.width / 2
+                origin.y: handleItem.height / 2
             }
         ]
+
+        MouseArea {
+            id: trackMouse
+            anchors.fill: parent
+            onPositionChanged: getVal()
+            onClicked: getVal()
+            cursorShape: Qt.SizeAllCursor
+
+            function getVal() {
+                var handlePoint = mapToItem(control, Qt.point(trackMouse.mouseX, trackMouse.mouseY))
+                // angle in degrees
+                var angleDeg = Math.atan2(handlePoint.y - centerPt.y, handlePoint.x - centerPt.x) * 180 / Math.PI + 90;
+                control.updateAngle(angleDeg)
+            }
+        }
+
         Loader {
             id: handleLoader
             sourceComponent: control.handle ? handle : handleComponent
-        }
-
-        Item {
-            parent: handleLoader
-            x: control.width / 2 - width / 2
-            y: control.height / 2 - height / 2
-            width: handleLoader.width
-            height: handleLoader.height
-
-            MouseArea {
-                id: trackMouse
-                anchors.fill: parent
-                onPositionChanged: getVal()
-                onClicked: getVal()
-                cursorShape: Qt.SizeAllCursor
-
-                function getVal() {
-                    var handlePoint = mapToItem(control, Qt.point(trackMouse.mouseX, trackMouse.mouseY))
-                    // angle in degrees
-                    var angleDeg = Math.atan2(handlePoint.y - centerPt.y, handlePoint.x - centerPt.x) * 180 / Math.PI + 90;
-                    control.updateAngle(angleDeg)
-                }
-            }
         }
     }
 
@@ -158,9 +204,8 @@ Item {
         id: handleComponent
 
         Rectangle {
-            id: handleItem
-            x: control.width / 2 - width / 2
-            y: control.height / 2 - height / 2
+            x: control.dialWidth / 2 - width / 2
+            y: control.dialWidth / 2 - height / 2
             width: control.dialWidth
             height: control.dialWidth
             color: "#17a8fa"

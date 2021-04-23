@@ -83,15 +83,15 @@ Window {
                 id: radSlider
                 value: croot.newVal
                 onValueChanged: croot.newVal = value
-                handleOffset: 0.53
+                wheelEnabled: true
 
                 handle: Rectangle {
                     id: handleItem
-                    x: radSlider.width / 2 - width / 2
-                    y: radSlider.height / 2 - height / 2
+                    x: (radSlider.dialWidth - width) / 2
+                    y: (radSlider.dialWidth - height) / 2
                     width: radSlider.dialWidth * 2
-                    height: radSlider.dialWidth
-                    color: "#bc081a"
+                    height: radSlider.dialWidth * 2
+                    color: "#780ada58"
                     radius: width / 2
                     antialiasing: true
                 }
@@ -103,17 +103,28 @@ Window {
                 onValueChanged: croot.newVal = value
                 startAngle: 40
                 endAngle: 320
-                rotation: 90
+                rotation: 180
+                dialWidth: 10
 
                 handle: Rectangle {
-                    x: radSlider2.width / 2 - width / 2
-                    y: radSlider2.height / 2 - height / 2
-                    width: radSlider2.width / 2
-                    height: 10
-                    color: "#65ac89"
+                    x: (radSlider2.dialWidth - width) / 2
+                    y: radSlider2.dialWidth / 2
+                    width: 10
+                    height: radSlider2.height / 2
+                    color: "#FFac89"
                     radius: width / 2
                     antialiasing: true
                 }
+            }
+
+            RoundSlider {
+                id: radSlider23
+                value: croot.newVal
+                onValueChanged: croot.newVal = value
+                startAngle: 40
+                endAngle: 320
+                rotation: 180
+                dialWidth: 30
             }
 
         }
