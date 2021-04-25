@@ -79,6 +79,7 @@ Window {
 
         Row {
             spacing: 10
+
             RoundSlider {
                 id: radSlider
                 value: croot.newVal
@@ -87,11 +88,13 @@ Window {
 
                 handle: Rectangle {
                     id: handleItem
-                    x: (radSlider.dialWidth - width) / 2
-                    y: (radSlider.dialWidth - height) / 2
-                    width: radSlider.dialWidth * 2
-                    height: radSlider.dialWidth * 2
-                    color: "#780ada58"
+                    transform: Translate {
+                        x: (radSlider.handleWidth - width) / 2
+                        y: (radSlider.handleHeight - height) / 2
+                    }
+                    width: 40
+                    height: 40
+                    color: "#0ada58"
                     radius: width / 2
                     antialiasing: true
                 }
@@ -107,8 +110,11 @@ Window {
                 dialWidth: 10
 
                 handle: Rectangle {
-                    x: (radSlider2.dialWidth - width) / 2
-                    y: radSlider2.dialWidth / 2
+                    transform: Translate {
+                        x: (radSlider2.handleWidth - width) / 2
+                        y: radSlider2.handleHeight / 2
+                    }
+
                     width: 10
                     height: radSlider2.height / 2
                     color: "#FFac89"
@@ -124,7 +130,6 @@ Window {
                 startAngle: 40
                 endAngle: 320
                 rotation: 180
-                dialWidth: 30
             }
 
         }

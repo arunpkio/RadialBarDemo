@@ -14,6 +14,9 @@ Item {
 
     readonly property alias actAngle: control.angle
     property int dialWidth: 20
+    property int handleWidth: 20
+    property int handleHeight: 20
+    property int handleRadius: 10
 
     property real startAngle: 0
     property real endAngle: 360
@@ -86,7 +89,7 @@ Item {
             id: pathDial
             strokeColor: control.dialColor
             fillColor: internal.transparentColor
-            strokeWidth: control.dialWidth/2
+            strokeWidth: control.dialWidth
             capStyle: control.penStyle
 
             PathAngleArc {
@@ -103,7 +106,7 @@ Item {
             id: pathProgress
             strokeColor: control.progressColor
             fillColor: internal.transparentColor
-            strokeWidth: control.dialWidth/2
+            strokeWidth: control.dialWidth
             capStyle: control.penStyle
 
             PathAngleArc {
@@ -121,8 +124,8 @@ Item {
         anchors.fill: parent
 
         onClicked:  {
-            var outerRadius = control.width/2
-            var innerRadius = control.width/2 - control.dialWidth
+            var outerRadius = internal.baseRadius
+            var innerRadius = internal.baseRadius - control.dialWidth
             var clickedDistance = (mouseX-centerPt.x)*(mouseX-centerPt.x) + (mouseY-centerPt.y)*(mouseY-centerPt.y)
             var innerRadius2 = (innerRadius * innerRadius)
             var outerRadius2 = (outerRadius * outerRadius)
@@ -163,12 +166,11 @@ Item {
         id: handleItem
         x: control.width / 2 - width / 2
         y: control.height / 2 - height / 2
-        width: control.dialWidth
-        height: width
+        width: control.handleWidth
+        height: control.handleHeight
         antialiasing: true
         transform: [
             Translate {
-                x: 0
                 y: -(Math.min(control.width, control.height)/2) + control.dialWidth / 2
             },
             Rotation {
@@ -204,10 +206,8 @@ Item {
         id: handleComponent
 
         Rectangle {
-            x: control.dialWidth / 2 - width / 2
-            y: control.dialWidth / 2 - height / 2
-            width: control.dialWidth
-            height: control.dialWidth
+            width: control.handleWidth
+            height: control.handleHeight
             color: "#17a8fa"
             radius: width / 2
             antialiasing: true
