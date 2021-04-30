@@ -6,24 +6,116 @@ import QtQml 2.15
 Item {
     id: control
 
+    /*!
+        \qmlproperty real CircularSlider::trackWidth
+        This property holds the width of the track arc.
+    */
     property int trackWidth: 20
+
+    /*!
+        \qmlproperty real CircularSlider::progressWidth
+        This property holds the width of the progress arc.
+    */
     property int progressWidth: 10
+
+    /*!
+        \qmlproperty real CircularSlider::handleWidth
+        This property holds the width of the default slider handle.
+    */
     property int handleWidth: 20
+
+    /*!
+        \qmlproperty real CircularSlider::handleHeight
+        This property holds the height of the default slider handle.
+    */
     property int handleHeight: 20
+
+    /*!
+        \qmlproperty real CircularSlider::handleRadius
+        This property holds the corner radius used to draw a rounded rectangle for the slider handle.
+    */
     property int handleRadius: 10
 
+    /*!
+        \qmlproperty real CircularSlider::startAngle
+        This property holds the start angle of the slider.
+        The range is from \c 0 degrees to \c 360 degrees.
+    */
     property real startAngle: 0
+
+    /*!
+        \qmlproperty real CircularSlider::endAngle
+        This property holds the end angle of the slider.
+        The range is from \c 0 degrees to \c 360 degrees.
+    */
     property real endAngle: 360
-    property real minValue: 0
-    property real maxValue: 100
-    property real value: 0
+
+    /*!
+        \qmlproperty real CircularSlider::minimumValue
+        This property holds the minimum value of the slider.
+        The default value is \c{0.0}.
+    */
+    property real minValue: 0.0
+
+    /*!
+        \qmlproperty real CircularSlider::maximumValue
+        This property holds the minimum value of the slider.
+        The default value is \c{1.0}.
+    */
+    property real maxValue: 1.0
+
+    /*!
+        \qmlproperty real CircularSlider::value
+        This property holds the current value of the slider.
+        The default value is \c{0.0}.
+    */
+    property real value: 0.0
+
+    /*!
+        \qmlproperty real CircularSlider::angle
+        \readonly
+        This property holds the angle of the handle.
+        The range is from \c 0 degrees to \c 360 degrees.
+    */
     readonly property real angle: internal.mapFromValue(minValue, maxValue, startAngle, endAngle, control.value)
 
-    property int penStyle: Qt.RoundCap
-    property color dialColor: "#FF005050"
+    /*!
+      \qmlproperty enumeration CircularSlider::capStyle
+      This property defines how the end points of lines are drawn. The default value is ShapePath.SquareCap.
+     */
+    property int capStyle: Qt.SquareCap
+
+    /*!
+      \qmlproperty real CircularSlider::trackColor
+      This property holds the fill color for the track.
+    */
+    property color trackColor: "#FF005050"
+
+    /*!
+      \qmlproperty real CircularSlider::progressColor
+      This property holds the fill color for the progress.
+    */
     property color progressColor: "#FFA51BAB"
+
+
+    /*!
+      \qmlproperty bool CircularSlider::wheelEnabled
+      This property determines whether the control handles wheel events. The default value is false.
+    */
     property bool wheelEnabled: false
+
+    /*!
+      \qmlproperty real CircularSlider::handle
+      This property holds the custom handle of the dial.
+    */
     property Component handle: null
+
+    /*!
+        \qmlproperty bool CircularSlider::pressed
+        \readonly
+        This property indicates whether the slider handle is being pressed.
+    */
+    readonly property alias pressed: trackMouse.pressed
 
     implicitWidth: 250
     implicitHeight: 250
@@ -43,7 +135,7 @@ Item {
         property real baseRadius: Math.min(control.width / 2, control.height / 2) - Math.max(control.trackWidth, control.progressWidth) / 2
         property real actualSpanAngle: control.endAngle - control.startAngle
         property color transparentColor: "transparent"
-        property color dialColor: control.dialColor
+        property color trackColor: control.trackColor
         property bool setUpdatedValue: false
         property real angleProxy: control.startAngle
 
@@ -76,12 +168,12 @@ Item {
         clip: false
 
         ShapePath {
-            id: pathDial
+            id: trackShape
 
-            strokeColor: control.dialColor
+            strokeColor: control.trackColor
             fillColor: internal.transparentColor
             strokeWidth: control.trackWidth
-            capStyle: control.penStyle
+            capStyle: control.capStyle
 
             PathAngleArc {
                 radiusX: internal.baseRadius
@@ -94,12 +186,12 @@ Item {
         }
 
         ShapePath {
-            id: pathProgress
+            id: progressShape
 
             strokeColor: control.progressColor
             fillColor: internal.transparentColor
             strokeWidth: control.progressWidth
-            capStyle: control.penStyle
+            capStyle: control.capStyle
 
             PathAngleArc {
                 radiusX: internal.baseRadius

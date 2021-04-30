@@ -84,7 +84,7 @@ Window {
                 id: radSlider
                 value: croot.newVal
                 onValueChanged: croot.newVal = value
-                wheelEnabled: true
+                width: 300
 
                 handle: Rectangle {
                     id: handleItem
@@ -107,7 +107,8 @@ Window {
                 startAngle: 40
                 endAngle: 320
                 rotation: 180
-                dialWidth: 10
+                trackWidth: 5
+                progressWidth: 20
 
                 handle: Rectangle {
                     transform: Translate {
@@ -136,8 +137,6 @@ Window {
 
         Slider {
             id: newSLider
-            from: 0
-            to: 100
             width: 300
             value: croot.newVal
             onValueChanged: croot.newVal = value
