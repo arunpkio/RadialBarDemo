@@ -7,6 +7,7 @@ Item {
     id: control
 
     property int trackWidth: 20
+    property int progressWidth: 10
     property int handleWidth: 20
     property int handleHeight: 20
     property int handleRadius: 10
@@ -39,8 +40,7 @@ Item {
         id: internal
 
         property var centerPt: Qt.point(width / 2, height / 2)
-        property real baseRadius: Math.min(control.width / 2, control.height / 2)
-        property real radiusOffset: control.trackWidth / 2
+        property real baseRadius: Math.min(control.width / 2, control.height / 2) - Math.max(control.trackWidth, control.progressWidth) / 2
         property real actualSpanAngle: control.endAngle - control.startAngle
         property color transparentColor: "transparent"
         property color dialColor: control.dialColor
@@ -84,8 +84,8 @@ Item {
             capStyle: control.penStyle
 
             PathAngleArc {
-                radiusX: internal.baseRadius - internal.radiusOffset
-                radiusY: internal.baseRadius - internal.radiusOffset
+                radiusX: internal.baseRadius
+                radiusY: internal.baseRadius
                 centerX: control.width / 2
                 centerY: control.height / 2
                 startAngle: control.startAngle - 90
@@ -98,12 +98,12 @@ Item {
 
             strokeColor: control.progressColor
             fillColor: internal.transparentColor
-            strokeWidth: control.trackWidth
+            strokeWidth: control.progressWidth
             capStyle: control.penStyle
 
             PathAngleArc {
-                radiusX: internal.baseRadius - internal.radiusOffset
-                radiusY: internal.baseRadius - internal.radiusOffset
+                radiusX: internal.baseRadius
+                radiusY: internal.baseRadius
                 centerX: control.width / 2
                 centerY: control.height / 2
                 startAngle: control.startAngle - 90
